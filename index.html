@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dust of Snow Flashcards - LessonThrills</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #FFDEE9, #B5FFFC);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            perspective: 1000px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .card.flip {
+            transform: rotateY(180deg);
+        }
+
+        .front, .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .front {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+        }
+
+        .back {
+            background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+            transform: rotateY(180deg);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+
+        .controls button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 24px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .controls button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="flashcard" class="flashcard" onclick="flipCard()">
+            <div class="card">
+                <div class="front" id="question">Click to see the answer.</div>
+                <div class="back" id="answer">Detail Answer: Click to see the next question.</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="prevBtn" onclick="prevFlashcard()" disabled>Previous</button>
+            <button id="firstBtn" onclick="firstFlashcard()">First</button>
+            <button id="nextBtn" onclick="nextFlashcard()">Next</button>
+        </div>
+        
+        <footer>Created by <strong>LessonThrills</strong></footer>
+    </div>
+
+    <script>
+        let currentFlashcard = 0;
+        const flashcards = [
+            { 
+                question: '1. What is the central theme of the poem "Dust of Snow" by Robert Frost?', 
+                answer: 'The central theme is the transformative power of nature.'
+            },
+            {
+                question: '2. Explain how the poet\'s mood changes in "Dust of Snow."',
+                answer: 'The poet\'s mood changes from gloomy to rejuvenated after snow falls on him.'
+            },
+            {
+                question: '3. Why does Robert Frost use the hemlock tree and the crow in the poem?',
+                answer: 'They symbolize sadness and negativity but have a positive impact on the poet.'
+            },
+            {
+                question: '4. What is the significance of the title "Dust of Snow"?',
+                answer: 'It suggests how small things in nature can have a profound impact.'
+            },
+            {
+                question: '5. Discuss the metaphorical meaning of the "crow" and "hemlock tree".',
+                answer: 'They represent sadness, but the crow helps the poet change his mood.'
+            },
+            {
+                question: '6. How does Robert Frost convey the idea of hope in "Dust of Snow"?',
+                answer: 'Frost shows how even small incidents can bring positivity and hope.'
+            },
+            {
+                question: '7. "And saved some part of a day I had rued." What does the poet mean by this line?',
+                answer: 'The poet is thankful that the snow incident helped him avoid wasting the entire day.'
+            },
+            {
+                question: '8. How is the poem "Dust of Snow" a reflection of Robert Frost\'s poetic style?',
+                answer: 'It reflects Frost\'s use of simple natural events to express deeper meanings.'
+            },
+            {
+                question: '9. Why is the use of enjambment significant in "Dust of Snow"?',
+                answer: 'Enjambment mirrors the smooth, spontaneous moment of the snow falling.'
+            },
+            {
+                question: '10. In what way does "Dust of Snow" deal with the theme of regret?',
+                answer: 'The poem suggests that small events can save us from regret and negativity.'
+            },
+            {
+                question: '11. What literary devices are used in "Dust of Snow"?',
+                answer: 'The poem uses symbolism, imagery, alliteration, and metaphor.'
+            },
+            {
+                question: '12. "Dust of Snow" was asked in the CBSE Board Exam of 2020. What was the question related to this poem?',
+                answer: 'The question was about how the fall of dust of snow changed the poet\'s mood.'
+            },
+            {
+                question: '13. What is the message of the poem "Dust of Snow"?',
+                answer: 'The poem teaches us to appreciate small moments in life and their potential to change our outlook.'
+            },
+            {
+                question: '14. How does "Dust of Snow" reflect Frost\'s view of nature?',
+                answer: 'Frost sees nature as a powerful force that can heal and bring positivity.'
+            },
+            {
+                question: '15. How does the brevity of "Dust of Snow" enhance its impact?',
+                answer: 'Its short structure emphasizes the significance of small, fleeting moments.'
+            },
+            {
+                question: '16. In which year did the CBSE Board ask about the significance of "crow" and "hemlock tree"?',
+                answer: 'The question was asked in the CBSE Board exam of 2017.'
+            },
+            {
+                question: '17. What does the falling of snow represent in the poem "Dust of Snow"?',
+                answer: 'It represents the idea that even small events in nature can bring about emotional transformation.'
+            },
+            {
+                question: '18. What mood was the poet in before the snow fell on him, and how did it change?',
+                answer: 'The poet was initially gloomy, but his mood brightened after the snow fell on him.'
+            },
+            {
+                question: '19. How is the use of nature important in "Dust of Snow"?',
+                answer: 'Nature serves as a source of emotional renewal and inspiration for the poet.'
+            },
+            {
+                question: '20. Why do you think Robert Frost used "rued" in the last line instead of a more common word like "regretted"?',
+                answer: 'The word "rued" adds a poetic, deeper sense of regret, fitting with the mood of the poem.'
+            },
+            {
+                question: '21. How does "Dust of Snow" connect to Frost\'s larger body of work?',
+                answer: 'It connects through its focus on nature, simplicity, and complex emotions.'
+            },
+            {
+                question: '22. What is the rhyme scheme of the poem "Dust of Snow"?',
+                answer: 'The poem follows an A B A B rhyme scheme in each quatrain.'
+            },
+            {
+                question: '23. What role does the crow play in the poem "Dust of Snow"?',
+                answer: 'The crow triggers the snow\'s fall, which leads to the poet\'s emotional transformation.'
+            },
+            {
+                question: '24. In the CBSE exam of 2019, what question was asked regarding the message of "Dust of Snow"?',
+                answer: 'The 2019 CBSE exam asked about how small incidents can have large impacts on life.'
+            },
+            {
+                question: '25. Why does the poet mention "some part of a day" in the poem?',
+                answer: 'He mentions it to show how the snow incident saved a part of the day from being wasted.'
+            },
+            {
+                question: '26. How does the structure of "Dust of Snow" contribute to its overall meaning?',
+                answer: 'The short, simple structure emphasizes the fleeting, yet impactful nature of the moment.'
+            },
+            {
+                question: '27. In what ways does "Dust of Snow" deal with the concept of transformation?',
+                answer: 'It deals with transformation by showing how a small incident completely changed the poet\'s mood.'
+            },
+            {
+                question: '28. How does Frost use imagery in "Dust of Snow"?',
+                answer: 'Frost uses vivid natural imagery to connect the reader with the poet\'s experience.'
+            },
+            {
+                question: '29. What is the significance of nature in Robert Frost\'s poetry, as seen in "Dust of Snow"?',
+                answer: 'Nature is a recurring theme that serves as a source of healing and emotional renewal.'
+            },
+            {
+                question: '30. How can "Dust of Snow" be seen as an optimistic poem?',
+                answer: 'It is optimistic because it shows how even small, unexpected events can bring positivity and change.'
+            }
+        ];
+
+        const questionDiv = document.getElementById('question');
+        const answerDiv = document.getElementById('answer');
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const firstBtn = document.getElementById('firstBtn');
+        const card = document.querySelector('.card');
+        
+        function loadFlashcard(index) {
+            const flashcard = flashcards[index];
+            questionDiv.textContent = flashcard.question;
+            answerDiv.textContent = "Detail Answer: " + flashcard.answer;
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === flashcards.length - 1;
+            firstBtn.disabled = index === 0;
+        }
+
+        function flipCard() {
+            card.classList.toggle('flip');
+            new Audio('click.mp3').play();  // Add sound effect (ensure you add a 'click.mp3' sound file in the same folder)
+        }
+
+        function nextFlashcard() {
+            if (currentFlashcard < flashcards.length - 1) {
+                currentFlashcard++;
+                loadFlashcard(currentFlashcard);
+                card.classList.remove('flip');
+            }
+        }
+
+        function prevFlashcard() {
+            if (currentFlashcard > 0) {
+                currentFlashcard--;
+                loadFlashcard(currentFlashcard);
+                card.classList.remove('flip');
+            }
+        }
+
+        function firstFlashcard() {
+            currentFlashcard = 0;
+            loadFlashcard(currentFlashcard);
+            card.classList.remove('flip');
+        }
+
+        // Initial load
+        loadFlashcard(currentFlashcard);
+    </script>
+</body>
+</html>
